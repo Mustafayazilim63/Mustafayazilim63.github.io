@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bebe technlogy group-Kelime Oyunu 1</title>
+    <style>
+      
+        body {  background-color: #0a3c42;
+            text-align: center;
+            
+        }
+        h1 {
+            color: #000000;
+        }
+        h2 {
+            color: #000000;
+        }
+        #word {
+            margin-bottom: 20px;
+          
+        }
+        .letter-box {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 0 5px;
+            border: 3px solid #000000;
+            text-align: center;
+            line-height: 30px;
+            font-size: 20px;
+        }
+        #guess {
+            margin-top: 20px;
+        }
+
+        #wrong-letter {
+            color: rgb(61, 4, 4);
+            font-size: 20px;
+           
+        }
+        #score-box {
+            margin-top: 10px;
+            font-size: 20px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: 3px solid;
+           height: 30px;
+           width: 160px;
+        
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #051d36;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #010f1f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kelime Oyunu</h1>
+    <h2 id="word-meaning">Kelimenin Anlamı</h2> 
+    <div id="word"></div>
+        
+    </div>
+    <div id="guess">
+        <input type="text"  id="guessInput"  style= " height: 30px; width: 200px; font-size: 20px; border: 3px solid;"><br><br><br>
+        <button onclick="checkGuess()">Harf Tahmin Et</button>
+        <button onclick="guessWord()">Kelime Tahmin Et</button>
+    </div><br><br>
+    <div id="wrong-letter"></div><br>
+     
+    <div id="score-box">
+        <span id="score">Puan: 0</span>
+    </div>
+
+    <script>
+        var wordPairs = [
+    { word: "MERHABA", meaning: "İnsanlara selam vermek için kullanılan bir sözcük." },
+    { word: "DÜNYA", meaning: "Yaşamın bulunduğu gezegenin adı." },
+    { word: "BİLGİSAYAR", meaning: "Bilgi işleme sisteminin adı." },
+    { word: "PROGRAMLAMA", meaning: "Bir bilgisayar programının tasarlanması ve yazılması süreci." },
+    { word: "KODLAMA", meaning: "Bir bilgisayar programının kodlarının yazılması işlemi." },
+    { word: "TEKNOLOJİ", meaning: "Bilim ve mühendislik uygulamalarında kullanılan tekniklerin toplamı." },
+    { word: "YAZILIM", meaning: "Bilgisayar programlarının oluşturulması, bakımı, yönetimi ve eğitimini içeren süreçlerin tamamı." },
+    { word: "GELİŞTİRME", meaning: "Bir bilgisayar veya yazılım sorununu çözmek için sağlanan yardım." },
+    { word: "DESTEK", meaning: "Bir bilgisayar uygulamasının kullanılabilirliği veya performansı üzerinde etkili olan sorunların çözümü." },
+    { word: "UYGULAMA", meaning: "Bir bilgisayar programının çalıştırılması veya kullanımı işlemi." },
+    { word: "ÇEVİRİ", meaning: "Bir metnin bir dildeki sözcüklerinin başka bir dile çevrilmesi işlemi." },
+    { word: "ANLAM", meaning: "Bir kavramın taşıdığı anlam veya bir kelimenin sözlükteki karşılığı." },
+    { word: "SÖZLÜK", meaning: "Bir dilde kullanılan sözcüklerin ve terimlerin tanımlarının bulunduğu kitap." },
+    { word: "MATEMATİK", meaning: "Matematiksel kavramların incelendiği bilim dalı." },
+    { word: "FİZİK", meaning: "Doğa olaylarını, maddeyi, enerjiyi ve bunların arasındaki ilişkileri inceleyen bilim dalı." },
+    { word: "KİMYA", meaning: "Madde ve maddenin değişimlerini inceleyen bilim dalı." },
+    { word: "BİYOLOJİ", meaning: "Canlı organizmaların yapılarını, işlevlerini ve dağılımlarını inceleyen bilim dalı." },
+    { word: "TARİH", meaning: "Geçmişte yaşanan olayları inceleyen bilim dalı." },
+    { word: "COĞRAFYA", meaning: "Dünya yüzeyinin ve üzerinde yaşayan canlıların dağılımını ve özelliklerini inceleyen bilim dalı." },
+    { word: "MERHABA", meaning: "Selamlaşma" },        
+    { word: "DÜNYA", meaning: "Gezegen" },
+    { word: "BİLGİSAYAR", meaning: "Bilgi işlem cihazı" },
+    { word: "PROGRAMLAMA", meaning: "Bir bilgisayar programı oluşturma süreci" },
+    { word: "KODLAMA", meaning: "Bir programlama dilinde kod yazma işlemi" },
+    { word: "TEKNOLOJİ", meaning: "Bilimsel ve pratik amaçlarla kullanılan araçlar, yöntemler ve süreçlerin tümü" },
+    { word: "YAZILIM", meaning: "Bir bilgisayarın çalışması için gerekli olan talimatları içeren programlar" },
+    { word: "GELİŞTİRME", meaning: "Bir ürünün veya sürecin daha iyi hale getirilmesi" },
+    { word: "DESTEK", meaning: "Yardım veya destek sağlama" },
+    { word: "UYGULAMA", meaning: "Belirli bir amaç için tasarlanmış bir program" },
+    { word: "ÇEVİRİ", meaning: "Bir dilde yazılmış metni başka bir dile aktarma işlemi" },
+    { word: "ANLAM", meaning: "Bir kelimenin veya ifadenin taşıdığı manevi veya somut değer" },
+    { word: "SÖZLÜK", meaning: "Kelime veya terimlerin anlamlarının açıklandığı kitap veya veritabanı" },
+    { word: "MATEMATİK", meaning: "Miktarlar, yapılar, değişim ve uzay gibi konuları inceleyen bilim dalı" },
+    { word: "FİZİK", meaning: "Madde, enerji ve bunların etkileşimlerini inceleyen bilim dalı" },
+    { word: "KİMYA", meaning: "Madde ve maddelerin yapıları, bileşimleri ve özellikleri üzerine çalışan bilim dalı" },
+    { word: "BİYOLOJİ", meaning: "Canlıların yapıları, işlevleri ve evrimi üzerine çalışan bilim dalı" },
+    { word: "TARİH", meaning: "Geçmişteki olayların incelenmesi ve kaydedilmesi" },
+    { word: "COĞRAFYA", meaning: "Dünya'nın fiziksel özelliklerini ve insanlarının yerleşimlerini inceleyen bilim dalı" },
+    { word: "SANAT", meaning: "İnsanın duygularını veya kavramlarını ifade etmek için kullanılan yaratıcı faaliyetlerin tümü" },
+    { word: "MUHASEBE", meaning: "Mali kayıtların tutulması ve finansal işlemlerin analiz edilmesi işlemi" },
+    { word: "EKONOMİ", meaning: "Bir ülkenin veya bölgenin mal ve hizmetlerinin üretimi, dağıtımı ve tüketimiyle ilgili bilim dalı" },
+    { word: "SİYASET", meaning: "Bir devletin veya toplumun yönetimini düzenleme ve idare etme işi" },
+    { word: "HUKUK", meaning: "Toplumda düzeni ve hakların korunmasını sağlayan kuralların tümü" },
+    { word: "FELSEFE", meaning: "Bilgi, gerçeklik, varlık, değer, akıl ve dil gibi temel kavramların incelendiği bilim dalı" },
+    { word: "PSİKOLOJİ", meaning: "İnsan davranışlarını ve zihinsel süreçleri inceleyen bilim dalı" },
+    { word: "SAĞLIK", meaning: "Bedensel ve zihinsel iyilik hali" },
+    { word: "SPOR", meaning: "Fiziksel aktivitelerin yapıldığı eğlence veya rekabet amaçlı etkinlikler" },
+    { word: "MÜZİK", meaning: "Seslerin ritmik ve melodik bir şekilde düzenlenmesi" },
+    { word: "FOTOĞRAF", meaning: "Işıkla bir yüzeyin duyarlı olduğu bir ortamda görüntünün kaydedilmesi işlemi" },
+    { word: "KÜLTÜR", meaning: "Bir toplumun veya topluluğun davranışları, inançları, sanatı, dil ve yaşam tarzı" },
+    { word: "DANS", meaning: "Müzik eşliğinde bedenin ritmik hareketleri" },
+    { word: "EDEBİYAT", meaning: "Sanatsal ifade için kullanılan yazılı veya sözlü eserlerin tümü" },
+    { word: "MODA", meaning: "Belirli bir dönemde belirli bir toplumda benimsenen giyim tarzı" },
+    { word: "YEMEK", meaning: "Yemeğin hazırlanması ve tüketilmesi" },
+    { word: "İLETİŞİM", meaning: "Bilgi, fikir ve duyguların aktarılması ve alınması işlemi" },
+    { word: "TURİZM", meaning: "Yer değiştirme, eğlenme, dinlenme veya başka amaçlarla yapılan geziler" },
+    { word: "İLETİŞİM", meaning: "Bilgi, fikir ve duyguların aktarılması ve alınması işlemi" },
+    { word: "TURİZM", meaning: "Yer değiştirme, eğlenme, dinlenme veya başka amaçlarla yapılan geziler" },
+    { word: "TASARIM", meaning: "Bir ürünün veya sürecin belirli bir amaca uygun olarak düzenlenmesi" },
+    { word: "EĞİTİM", meaning: "Bilgi ve becerilerin aktarılması ve kazandırılması süreci" },
+    { word: "GÜZELLİK", meaning: "Estetik ve çekicilik" },
+    { word: "SINEMA", meaning: "Filmlerin gösterildiği yer veya film endüstrisi" },
+    { word: "TELEFON", meaning: "Ses iletişimi sağlayan elektronik cihaz" },
+    { word: "OTOMOBİL", meaning: "Bir kişinin taşınması için tasarlanmış motorlu araç" },
+    { word: "EV", meaning: "Yaşam alanı olarak kullanılan yapı" },
+    { word: "İŞ", meaning: "Bir kişinin geçimini sağlamak için yapılan faaliyet veya meslek" },
+    { word: "PARA", meaning: "Mal veya hizmetlerin alımı ve satımı için kullanılan değişim aracı" },
+    { word: "ZAMAN", meaning: "Olayların meydana geldiği süre veya bir anın ölçüsü" },
+    { word: "MEKAN", meaning: "Fiziksel varlıkların bulunduğu alan veya yer" },
+    { word: "RENK", meaning: "Görme yeteneği ile algılanan ışığın niteliği" },
+    { word: "SES", meaning: "Titreşimlerin nesne veya ortamda meydana getirdiği duyusal deneyim" },
+    { word: "MUTLULUK", meaning: "İyilik, memnuniyet ve huzur duygusu" },
+    { word: "HAYAT", meaning: "Canlı varlıkların varoluş süreci" },
+    { word: "RÜYA", meaning: "Bilinçli olmadığımız zamanlarda gördüğümüz imgeler veya olaylar" },
+    { word: "KİTAP", meaning: "Baskı veya dijital ortamda yazılmış metinlerin toplandığı nesne" },
+    { word: "YAZMAK", meaning: "Kelime veya cümleleri bir yüzeye yazma işlemi" },
+    { word: "İMAJ", meaning: "Bir kişinin veya şeyin genel algısı veya izlenimi" },
+    { word: "YETENEK", meaning: "Belirli bir faaliyeti yapma veya bir konuda başarı gösterme kapasitesi" },
+    { word: "İLGİ", meaning: "Bir konuya duyulan ilgi veya merak" },
+    { word: "TAKIM", meaning: "Bir araya gelmiş bir grup insan veya nesne" },
+    { word: "MÜŞTERİ", meaning: "Bir mal veya hizmeti satın alan veya kullanıcı" },
+    { word: "KARAR", meaning: "Bir durumla ilgili alınan kesin veya belirli bir görüş" },
+    { word: "GÖRÜŞ", meaning: "Bir konu hakkındaki düşünce veya fikir" },
+    { word: "BİLGİ", meaning: "Belirli bir konuda bilinçli olarak elde edilen veri veya bilgi" },
+    { word: "YAPAY ZEKA", meaning: "Bilgisayar sistemlerinin insan benzeri zekaya sahip olması yeteneği" },
+    { word: "VERİ", meaning: "Bilginin bir formu veya formatı" },
+    { word: "HİZMET", meaning: "Bir ihtiyacı karşılamak veya bir amacı gerçekleştirmek için sunulan faaliyet" },
+    { word: "ÜRÜN", meaning: "Bir mal veya hizmetin sonucu veya sonucu" },
+    { word: "TEKNOLOJİ", meaning: "Bilimsel ve pratik amaçlarla kullanılan araçlar, yöntemler ve süreçlerin tümü" },
+    { word: "TARZ", meaning: "Belirli bir şekilde yapılan veya gerçekleştirilen bir şeyin özellikleri" },
+    { word: "UYGULAMA", meaning: "Belirli bir amaca hizmet eden bir program veya yazılım" },
+    { word: "GÜVENLİK", meaning: "Bir şeyin tehlikeden korunması veya korunması" },
+    { word: "YÖNETİM", meaning: "Bir organizasyonun veya işletmenin idaresi veya kontrolü" },
+    { word: "BİRİM", meaning: "Belirli bir amacı gerçekleştirmek için bir araya getirilmiş bir grup insan veya nesne" },
+    { word: "ANALİZ", meaning: "Bir şeyin parçalara ayrılması ve bileşenlerinin incelenmesi" },
+    { word: "PROJE", meaning: "Belirli bir sonuca ulaşmak için planlanmış bir dizi faaliyet veya görev" },
+    { word: "OBSTRÜKSIYON", maning: "Engelleme veya tıkanıklık" },
+    { word: "DİLEMMA", maning: "Zor bir seçim veya karar verme durumu" },
+    { word: "MÜSTAHSİL", maning: "Ürün veya hizmet üreten kişi veya firma" },
+    { word: "MÜTEŞEKKİR", maning: "Minnettar veya şükran duyan" },
+    { word: "ZAMK", maning: "Sertleşebilen yapışkan madde" },
+    { word: "SÜFLE", maning: "Söyleme veya hatırlatma" },
+    { word: "SÖMÜRGECİLİK", maning: "Bir ulusun veya halkın başka bir ulusun veya halkın topraklarını kontrol etme" },
+    { word: "FERMAN", maning: "Resmi bir emir veya bildiri" },
+    { word: "MUARIZ", maning: "Rakip veya karşıt" },
+    { word: "HARP", maning: "Savaş veya çatışma" },
+    { word: "DEMİRBAŞ", maning: "Taşınabilir mal veya eşya" },
+    { word: "MARUZ", maning: "Bir tehlikeye veya risk altında olmak" },
+    { word: "İSTİKRAZ", maning: "Bir şeyin geçici olarak ödünç alınması" },
+    { word: "MEFKÛRE", maning: "Gelecekte gerçekleşmesi beklenen ideal veya plan" },
+    { word: "NÜKLEER", maning: "Atom çekirdeği ile ilgili veya nükleer enerji kullanımı" },
+    { word: "DİNAMİZM", maning: "Enerji veya canlılık" },
+    { word: "AZOT", maning: "Karbon, oksijen ve hidrojenin yanı sıra diğer elementlerle birleşerek bileşikler oluşturan bir kimyasal element" },
+    { word: "KORUMA", maning: "Bir şeyin zarar görmesini veya tehlikeye düşmesini önleme" },
+    { word: "KÜSMEK", maning: "Bir kişiyle arayı bozmak veya düşmanlık duymak" },
+    { word: "NİTELİK", maning: "Bir şeyin sahip olduğu özellik veya niteliklerin toplamı" },
+    { word: "GÜÇLÜ", maning: "Fiziksel olarak güçlü veya güçlü" },
+    { word: "KABUL", maning: "Bir şeyi kabul etme veya onaylama" },
+    { word: "KAVRAM", maning: "Bir şeyin fikri veya zihinsel temsili" },
+    { word: "OLGU", maning: "Bir gerçek veya olay" },
+    { word: "ZENGİN", maning: "Mal veya servet açısından büyük miktarda sahip olan" },
+    { word: "ALGISI", maning: "Bir şeyin farkında olma veya anlama yeteneği" },
+    { word: "YANSIMA", maning: "Bir yüzeyden gelen ışığın veya sesin yansıması" },
+    { word: "MÜKEMMEL", maning: "Kusursuz veya mükemmel" },
+    { word: "ZEKİ", maning: "Zekaya sahip veya zeki" },
+    { word: "KAYNAK", maning: "Bir şeyin kökeni veya kaynağı" },
+    { word: "UZLAŞMA", maning: "Anlaşma veya uzlaşma" },
+    { word: "VAROLUŞ", maning: "Varlık veya mevcudiyet" },
+    { word: "ÖZ", maning: "Bir şeyin temel veya esas nitelikleri" },
+    { word: "GÜNCEL", maning: "Şu anda mevcut veya geçerli olan" },
+    { word: "ÇİZGİ", maning: "Bir yüzeyde belirli bir yönde uzanan düz bir çizgi" },
+    { word: "KAHRAMAN", maning: "Olağanüstü başarılar gösteren veya cesur davranışlarda bulunan kişi" },
+    { word: "VATANDAŞ", maning: "Bir ülkenin yasal olarak tanınmış bir sakin" },
+    { word: "İSRAF", maning: "Gereksiz harcama veya kaynakların boşa kullanımı" },
+    { word: "AKTARMA", maning: "Bir yerden başka bir yere taşıma veya transfer etme işlemi" },
+    { word: "MEYDAN", maning: "Açık, geniş bir alan" },
+    { word: "KALP", maning: "Vücudun ana pompalayan organı" },
+    { word: "TEHLİKE", maning: "Zarar veya tehlike oluşturan durum" },
+    { word: "DENGE", maning: "Denge veya istikrar" },
+    { word: "YENİLİK", maning: "Yeni ve orijinal bir fikir, ürün veya yöntem" },
+    { word: "DESTEK", maning: "Yardım veya destek sağlama" },
+    { word: "ARZU", maning: "Bir şeyi elde etme veya başarma isteği" },
+    { word: "KÜSTAH", maning: "Saygısız veya kaba davranışlar sergileyen" },
+    { word: "FARKINDALIK", maning: "Bir durumu veya gerçeği fark etme veya anlama yeteneği" },
+    { word: "GÖZLEM", maning: "Dikkatlice gözleme veya izleme" },
+    { word: "TAKDİR", maning: "Bir şeyin değerini veya önemini anlama veya takdir etme" },
+    { word: "DENEYİM", maning: "Bir olayı veya durumu doğrudan deneyimleme veya yaşama" },
+    { word: "SÜREKLİLİK", maning: "Devam eden veya sürekli bir durum" },
+    { word: "İŞBİRLİĞİ", maning: "Birlikte çalışma veya işbirliği" },
+    { word: "KİMLİK", maning: "Bir kişinin benzersiz özellikleri veya karakteristiği" },
+    { word: "ÖZLEM", maning: "Bir şeyi veya birini özleme duygusu" },
+    { word: "YALNIZLIK", maning: "Yalnız olma veya yalnızlık hissi" },
+    { word: "GELİŞME", maning: "Bir durumun veya olayın ilerlemesi veya gelişmesi" },
+    { word: "HAREKET", maning: "Bir yerden başka bir yere gitme veya hareket etme" },
+    { word: "YETİŞKİN", maning: "Ergin veya olgun" },
+    { word: "ÖZGÜR", maning: "Kısıtlamalardan veya engellerden bağımsız olan" },
+    { word: "KUTLAMA", maning: "Bir başarıyı veya olayı kutlama" },
+    { word: "ÖVGÜ", maning: "Birinin başarılarını veya niteliklerini överek ifade etme" },
+    { word: "KURULUM", maning: "Bir sistem veya cihazın montajı veya kurulumu" },
+    { word: "ÖNCÜL", maning: "Bir şeyin gelişiminde veya başlangıcında etkili olan" },
+    { word: "MÜDAHALE", maning: "Bir duruma veya olaya müdahale etme" },
+    { word: "TÜR", maning: "Bir organizma veya nesne grubunun genel karakteristikleri" },
+    { word: "TÜKETİM", maning: "Bir mal veya hizmetin kullanımı veya tüketimi" },
+    { word: "KAMPANYA", maning: "Belirli bir amacı desteklemek için yapılan organize çaba" },
+    { word: "ENGEL", maning: "Bir şeyin ilerlemesini veya gelişmesini durduran veya zorlaştıran durum" },
+    { word: "YÜZLEŞME", maning: "Bir sorunla veya gerçekle yüzleşme" },
+    { word: "KARİYER", maning: "Bir kişinin mesleki ilerlemesi veya iş yaşamı boyunca kazandığı deneyimler" },
+    { word: "İSTİKRAR", maning: "Sabitlik veya devamlılık durumu" },
+    { word: "YARGI", maning: "Bir durum veya kişi hakkında yapılan değerlendirme veya karar" },
+    { word: "FELSEFE", maning: "İnsanın varoluşu, bilgi, değerler, ahlak ve zihin gibi konuları inceleyen disiplin" },
+    { word: "TANITIM", maning: "Bir ürünün veya hizmetin tanıtılması veya pazarlanması" },
+    { word: "KÜLTÜR", maning: "Bir toplumun sanat, edebiyat, müzik, gelenekler ve değerler gibi unsurlarını içeren genel yaşam tarzı" },
+    { word: "KAYNAK", maning: "Bir şeyin başka bir şeyin varlığını veya doğasını destekleyen şey" },
+    { word: "ANLAYIŞ", maning: "Bir durumu veya konuyu anlama veya kavrama yeteneği" },
+    { word: "ÇATIŞMA", maning: "Farklı fikirler, hedefler veya çıkarlar arasındaki çatışma veya mücadele" },
+    { word: "KURUM", maning: "Belirli bir amacı gerçekleştirmek için yapılan organizasyon veya kuruluş" },
+    { word: "İLHAM", maning: "Yaratıcılığı veya motivasyonu artıran bir düşünce veya fikir" },
+    { word: "ESER", maning: "Sanatsal veya yaratıcı bir çalışma" },
+    { word: "KAZANIM", maning: "Bir şeyin elde edilmesi veya başarılması" },
+    { word: "FARKINDALIK", maning: "Bir durumun veya gerçeğin farkında olma" },
+    { word: "KURGU", maning: "Bir hikayenin veya eserin yapısal düzeni" },
+    { word: "EFSANE", maning: "Geleneksel olarak anlatılan hayali veya mitolojik hikaye" },
+    { word: "YENİLİK", maning: "Yeni veya farklı bir şeyin tanıtılması veya keşfedilmesi" },
+    { word: "OYUNCU", maning: "Bir oyun, film veya tiyatro eserinde rol alan kişi" },
+    { word: "YORUM", maning: "Bir durum veya olay hakkındaki düşünce veya görüş" },
+    { word: "DEĞERLENDİRME", maning: "Bir şeyin değerini veya etkisini değerlendirme süreci" },
+    { word: "ÇEŞİTLİLİK", maning: "Farklı türlerin veya özelliklerin varlığı" },
+    { word: "BELİRSİZLİK", maning: "Bir durumun net olmaması veya belirsiz olması" },
+    { word: "YÖNTEM", maning: "Belirli bir amaca ulaşmak için kullanılan prosedür veya teknik" },
+    { word: "DENEYİM", maning: "Bir kişinin yaşadığı olaylar veya edindiği bilgi" },
+    { word: "VURGU", maning: "Bir şeyin önemini veya dikkat edilmesi gerektiğini belirtme" },
+    { word: "OLUMLU", maning: "Bir durumun veya kişinin olumlu yönleri olan" },
+    { word: "OLUMSUZ", maning: "Bir durumun veya kişinin olumsuz yönleri olan" },
+    { word: "MÜZAKERE", maning: "Taraflar arasında bir konuyu tartışma ve çözme süreci" },
+    { word: "DESTEK", maning: "Yardım veya destek sağlama" },
+    { word: "UYGUNLUK", maning: "Bir şeyin bir amaca uygun olması veya uygun olması durumu" },
+    { word: "ÖZELLİK", maning: "Bir şeyin belirli bir özelliği veya niteliği" },
+    { word: "KURULUŞ", maning: "Bir organizasyonun veya şirketin kurulması" },
+    { word: "YAKLAŞIM", maning: "Bir sorunu ele alma veya bir durumu değerlendirme şekli" },
+    { word: "FARKETMEK", maning: "Bir şeyin varlığını veya önemini fark etme" },
+    { word: "KÜRESEL", maning: "Dünya çapında veya genel olarak geçerli olan" },
+    { word: "UZLAŞMA", maning: "Taraflar arasında anlaşma veya uzlaşma" },
+    { word: "TAHSİS", maning: "Bir amaç için ayrılan kaynak veya zaman" },
+    { word: "GELİŞİM", maning: "Bir şeyin gelişme veya büyüme süreci" },
+    { word: "TEMEL", maning: "Bir şeyin en önemli veya temel bileşeni" },
+    { word: "FARKLI", maning: "Bir şeyin diğerlerinden farklı veya benzersiz olması" },
+    { word: "ÖZGÜN", maning: "Bir şeyin benzersiz veya orijinal olması" },
+    { word: "SANAT", meaning: "İnsanların yaratıcı yeteneklerini kullanarak estetik eserler ortaya koydukları alan." }
+           
+          
+        ];
+
+        var guessedLetters = [];
+        var wrongLetters = [];
+        var correctWords = [];
+        var currentWordIndex = 0;
+        var wordPair = {};
+        var word = "";
+        var score = 0;
+
+        function initGame() {
+            wordPairs.sort(() => Math.random() - 0.5);
+            currentWordIndex = 0;
+            wordPair = wordPairs[currentWordIndex];
+            word = wordPair.word.toUpperCase();
+            guessedLetters = [];
+            wrongLetters = [];
+            document.getElementById("word-meaning").textContent = wordPair.meaning;
+            displayWord();
+        }
+
+        function displayWord() {
+            var wordContainer = document.getElementById("word");
+            wordContainer.innerHTML = ""; // Önceki içeriği temizle
+            for (var i = 0; i < word.length; i++) {
+                var letterBox = document.createElement("div"); 
+                letterBox.className = "letter-box";
+                if (guessedLetters.includes(word[i])) {
+                    letterBox.textContent = word[i];
+                } else {
+                    letterBox.textContent = "_";
+                }
+                wordContainer.appendChild(letterBox);
+            }
+        }
+
+        function checkGuess() {
+            var guess = document.getElementById("guessInput").value.toUpperCase();
+            if (guess.length === 1 && /^[A-Z]$/.test(guess)) {
+                if (!guessedLetters.includes(guess)) {
+                    if (!word.includes(guess)) {
+                        if (!wrongLetters.includes(guess)) {
+                            wrongLetters.push(guess);
+                            document.getElementById("wrong-letter").textContent = "Yanlış harfler: " + wrongLetters.join(", ");
+                            score -= 10;
+                            updateScore();
+                        }
+                    } else {
+                        guessedLetters.push(guess);
+                        displayWord();
+                        if (word.split('').every(letter => guessedLetters.includes(letter))) {
+                            alert("Tebrikler, kelimeyi buldunuz!");
+                            score += 200; 
+                            correctWords.push(word); 
+                            updateScore();
+                            currentWordIndex++;
+                            if (currentWordIndex < wordPairs.length) {
+                                wordPair = wordPairs[currentWordIndex];
+                                word = wordPair.word.toUpperCase();
+                                guessedLetters = [];
+                                wrongLetters = [];
+                                document.getElementById("wrong-letter").textContent = "";
+                                document.getElementById("word-meaning").textContent = wordPair.meaning;
+                                displayWord();
+                            } else {
+                                alert("Tüm kelimeleri bildiniz!");
+                            }
+                        }
+                    }
+                } else {
+                    alert("Bu harfi zaten tahmin ettiniz!");
+                }
+            } else {
+                alert("Lütfen tek bir harf girin!");
+            }
+            document.getElementById("guessInput").value = "";
+        }
+
+        function guessWord() {
+            var guess = prompt("Kelimeyi tahmin edin:").toUpperCase();
+            if (guess === word) {
+                for (var i = 0; i < guess.length; i++) {
+                    guessedLetters.push(guess[i]);
+                }
+                displayWord();
+                alert("Tebrikler, kelimeyi doğru tahmin ettiniz!");
+                score += 200;
+                updateScore();
+                currentWordIndex++;
+                if (currentWordIndex < wordPairs.length) {
+                    wordPair = wordPairs[currentWordIndex];
+                    word = wordPair.word.toUpperCase();
+                    guessedLetters = [];
+                    wrongLetters = [];
+                    document.getElementById("wrong-letter").textContent = "";
+                    document.getElementById("word-meaning").textContent = wordPair.meaning;
+                    displayWord();
+                } else {
+                    alert("Tüm kelimeleri bildiniz!");
+                }
+            } else {
+                alert("Maalesef, yanlış tahmin ettiniz.");
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("score").textContent = "Puan: " + score;
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
